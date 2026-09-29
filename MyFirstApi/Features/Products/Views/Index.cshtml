@@ -1,0 +1,122 @@
+@model List<MyApiProject.Features.Products.ProductResponseDto>
+@{
+    ViewData["Title"] = "จัดการสต็อกสินค้า";
+}
+
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">คลังสินค้า</h1>
+            <p class="text-sm text-slate-500">จัดการข้อมูลและปรับสต็อกสินค้าได้ทันที</p>
+        </div>
+        <div class="text-sm text-slate-600 bg-white border border-slate-200 px-4 py-2 rounded-lg shadow-sm">
+            สินค้าทั้งหมด: <span class="font-semibold text-indigo-600">@Model.Count</span> รายการ
+        </div>
+    </div>
+
+    <!-- ฟอร์มเพิ่มสินค้าใหม่ -->
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-base font-semibold text-slate-800 mb-3">➕ เพิ่มสินค้าใหม่</h2>
+        <form asp-action="Create" method="post" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div>
+                <input name="Name" required placeholder="ชื่อสินค้า..."
+                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+            <div>
+                <input name="Price" type="number" step="0.01" min="0.01" required placeholder="ราคา (บาท)"
+                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+            <div>
+                <input name="Stock" type="number" min="0" required placeholder="จำนวนสต็อกเริ่มต้น"
+                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+            </div>
+            <div>
+                <button type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors duration-150">
+                    บันทึกข้อมูล
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ตารางแสดงรายการสินค้า -->
+    <div class="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
+        <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <thead class="bg-slate-100 text-slate-600 font-semibold uppercase text-xs">
+                <tr>
+                    <th scope="col" class="py-3 px-4 text-left">ID</th>
+                    <th scope="col" class="py-3 px-4 text-left">ชื่อสินค้า</th>
+                    <th scope="col" class="py-3 px-4 text-right">ราคา</th>
+                    <th scope="col" class="py-3 px-4 text-center">คงเหลือ</th>
+                    <th scope="col" class="py-3 px-4 text-center">ปรับสต็อก</th>
+                    <th scope="col" class="py-3 px-4 text-center">จัดการ</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-8 text-slate-400">ยังไม่มีสินค้าในระบบ</td>
+                    </tr>
+                }
+                @foreach (var item in Model)
+                {
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="py-3 px-4 font-mono text-xs text-slate-400">#@item.Id</td>
+                        <td class="py-3 px-4 font-medium text-slate-900">@item.Name</td>
+                        <td class="py-3 px-4 text-right tabular-nums">฿@item.Price.ToString("N2")</td>
+                        <td class="py-3 px-4 text-center">
+                            @if (item.Stock == 0)
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                                    หมดสต็อก
+                                </span>
+                            }
+                            else if (item.Stock <= 5)
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                    เหลือ @item.Stock ชิ้น
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                    @item.Stock ชิ้น
+                                </span>
+                            }
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <div class="inline-flex gap-1.5 items-center">
+                                <form asp-action="AdjustStock" method="post">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="hidden" name="amount" value="-1" />
+                                    <button type="submit" @(item.Stock <= 0 ? "disabled" : "")
+                                            class="w-7 h-7 flex items-center justify-center rounded border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold transition">
+                                        -
+                                    </button>
+                                </form>
+                                <form asp-action="AdjustStock" method="post">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="hidden" name="amount" value="1" />
+                                    <button type="submit"
+                                            class="w-7 h-7 flex items-center justify-center rounded border border-slate-300 text-slate-600 hover:bg-slate-100 text-xs font-bold transition">
+                                        +
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <form asp-action="Delete" method="post" onsubmit="return confirm('ยืนยันลบสินค้านี้?');">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="text-xs text-red-600 hover:text-red-800 hover:underline font-medium">
+                                    ลบ
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

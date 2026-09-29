@@ -1,0 +1,67 @@
+@model IEnumerable<MyApiProject.Features.Products.ProductResponseDto>
+@{
+    ViewData["Title"] = "จุดขายสินค้า (POS)";
+}
+
+<div class="p-4">
+    <h1 class="text-2xl font-bold text-slate-800 mb-6">รายการสินค้าสำหรับขาย</h1>
+    <div class="flex flex-col-2 gap-6 h-[70vh]">
+        <div
+            class="flex-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-4 border border-slate-200 rounded-xl p-4 bg-white shadow-sm">
+            @if (Model == null || !Model.Any())
+            {
+                <div class="col-span-full py-12 text-center text-slate-400">
+                    ไม่มีสินค้าในระบบ
+                </div>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <div class="bg-white h-32 p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-indigo-400 transition cursor-pointer flex flex-col justify-between"
+                        onclick="addToCart(@item.Id, '@item.Name', @item.Price, @item.Stock)">
+                        
+                        <div>
+                            <span class="text-xs font-mono text-slate-400">#@item.Id</span>
+                            <h3 class="font-semibold text-slate-800 text-lg mt-1 line-clamp-2">
+                                @item.Name
+                            </h3>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                            @if (item.Stock <= 0)
+                            {
+                                <span class="text-xs font-medium text-red-500">หมดสต็อก</span>
+                            }
+                            else
+                            {
+                                <span class="text-xs text-slate-500">เหลือ @item.Stock ชิ้น</span>
+                            }
+
+                            <span class="text-xs font-bold text-indigo-600">
+                                ฿@item.Price.ToString("N2")
+                            </span>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="flex flex-col border border-slate-200 rounded-xl w-[30%] p-4 bg-white shadow-sm">
+                <h2 class="text-lg font-semibold text-slate-800 mb-2">ตะกร้าสินค้า</h2>
+            <div class="flex-1 flex-col w-full border border-slate-200 rounded-xl p-4 bg-slate-50 shadow-sm">
+                <div id="cartItems" class="space-y-2 overflow-y-auto p-2">
+                    <p class="text-sm text-slate-400">ยังไม่มีสินค้าในตะกร้า</p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <span class="font-semibold text-slate-700">รวมทั้งหมด:</span>
+                    <span id="cartTotal" class="font-bold text-indigo-600">฿0.00</span>
+                </div>
+            </div>
+            <div class='mt-4 pt-3  border-t border-slate-100'>
+                <div class="border border-slate-200 rounded-xl p-4 text-center bg-blue-500 text-white hover:bg-blue-600 shadow-sm">
+                    ชำระเงิน
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

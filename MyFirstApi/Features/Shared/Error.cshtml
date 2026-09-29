@@ -1,0 +1,58 @@
+@model MyApiProject.Controllers.ErrorViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="flex items-center justify-center min-h-[70vh] px-4 py-8">
+    <div class="max-w-md w-full bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center space-y-6">
+        
+        <!-- Icon Badge ตามสถานะ Error -->
+        <div class="mx-auto w-16 h-16 flex items-center justify-center rounded-2xl @(Model.StatusCode == 404 ? "bg-amber-50 text-amber-600" : "bg-red-50 text-red-600")">
+            @if (Model.StatusCode == 404)
+            {
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            }
+            else
+            {
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            }
+        </div>
+
+        <!-- ข้อความหัวเรื่องและคำอธิบาย -->
+        <div class="space-y-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">HTTP Status @Model.StatusCode</span>
+            <h1 class="text-xl font-bold text-slate-900">@Model.Title</h1>
+            <p class="text-sm text-slate-500 leading-relaxed">
+                @Model.Description
+            </p>
+        </div>
+
+        <!-- รหัสติดตาม Request ID สำหรับให้ผู้ใช้แจ้งปัญหา -->
+        @if (Model.ShowRequestId)
+        {
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-left">
+                <span class="block text-xs font-medium text-slate-400 mb-1">Tracking ID:</span>
+                <code class="block font-mono text-xs text-slate-700 break-all select-all">
+                    @Model.RequestId
+                </code>
+            </div>
+        }
+
+        <!-- ปุ่มกดกลับสู่หน้าหลัก / ลองใหม่อีกครั้ง -->
+        <div class="flex flex-col sm:flex-row gap-2 pt-2">
+            <a href="/products"
+               class="flex-1 inline-flex justify-center items-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+                กลับหน้าคลังสินค้า
+            </a>
+            <button onclick="window.location.reload();"
+                    class="flex-1 inline-flex justify-center items-center px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition-colors">
+                โหลดใหม่อีกครั้ง
+            </button>
+        </div>
+
+    </div>
+</div>

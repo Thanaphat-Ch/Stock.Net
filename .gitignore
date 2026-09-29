@@ -1,0 +1,32 @@
+## Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+TestResults/
+
+## Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Visual Studio Code (เปิดคอมเมนต์บรรทัดล่างหากไม่ต้องการแชร์ config)
+#.vscode/
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+
+## User-specific settings & Secrets
+appsettings.Local.json
+*.local.json
+.env
+
+## OS generated files
+.DS_Store
+Thumbs.db
+
+WebApplication1
+MyProjectMVC
