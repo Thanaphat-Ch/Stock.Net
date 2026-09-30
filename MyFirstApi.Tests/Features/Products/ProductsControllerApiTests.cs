@@ -39,7 +39,7 @@ public class ProductsApiControllerTests
         // Assert (ตรวจสอบผลลัพธ์)
         var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
         var returnedProduct = okResult.Value.Should().BeOfType<ProductResponseDto>().Subject;
-        
+
         returnedProduct.Id.Should().Be(targetId);
         returnedProduct.Name.Should().Be("Keyboard");
     }

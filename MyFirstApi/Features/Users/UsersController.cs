@@ -24,7 +24,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var users = await _db.Users2.ToListAsync();
-        return Ok(users); 
+        return Ok(users);
     }
 
     // GET: /api/users/5

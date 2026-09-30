@@ -14,7 +14,7 @@ public static class AuthenticationExtensions
         // 1. อ่านค่าจาก appsettings.json
         var jwtSection = configuration.GetSection("JwtSettings");
         services.Configure<JwtSettings>(jwtSection);
-        
+
         var jwtSettings = jwtSection.Get<JwtSettings>();
         if (jwtSettings == null || string.IsNullOrEmpty(jwtSettings.SecretKey))
         {

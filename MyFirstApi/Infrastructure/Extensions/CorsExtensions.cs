@@ -8,7 +8,7 @@ public static class CorsExtensions
     public static IServiceCollection AddCustomCors(this IServiceCollection services, IConfiguration configuration)
     {
         // ดึง Origins ที่อนุญาตจาก appsettings.json (เพื่อความยืดหยุ่นตอน Deploy)
-        var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>() 
+        var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>()
                              ?? new[] { "http://localhost:3000", "http://localhost:5173" };
 
         services.AddCors(options =>

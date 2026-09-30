@@ -13,7 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("SupabaseDb");
 builder.AddSerilogLogging();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddJwtAuthentication(builder.Configuration);builder.Services.AddControllers();
+builder.Services.AddJwtAuthentication(builder.Configuration); builder.Services.AddControllers();
 builder.Services.AddCustomCors(builder.Configuration);
 
 // ลงทะเบียนระบบ Exception Handler

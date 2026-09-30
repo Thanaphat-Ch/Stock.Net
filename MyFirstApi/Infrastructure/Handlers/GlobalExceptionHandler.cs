@@ -28,12 +28,12 @@ public class GlobalExceptionHandler : IExceptionHandler
         {
             // ถ้าเป็นคำขอเปิดหน้าเว็บทั่วไป (MVC):
             // สั่ง Redirect ไปยังหน้า UI Error พร้อมระบุ StatusCode
-            int statusCode = exception is ArgumentException 
-                ? StatusCodes.Status400BadRequest 
+            int statusCode = exception is ArgumentException
+                ? StatusCodes.Status400BadRequest
                 : StatusCodes.Status500InternalServerError;
 
             httpContext.Response.Redirect($"/error/{statusCode}");
-            
+
             // คืนค่า true เพื่อจบขั้นตอน ไม่ต้องพ่น JSON ออกไป
             return true;
         }
@@ -60,6 +60,6 @@ public class GlobalExceptionHandler : IExceptionHandler
 
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
-        return true; 
+        return true;
     }
 }
