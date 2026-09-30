@@ -1,6 +1,4 @@
 <Solution>
   <Project Path="MyFirstApi.Tests/MyFirstApi.Tests.csproj" />
   <Project Path="MyFirstApi/MyFirstApi.csproj" />
-  <Project Path="MyProjectMVC/MyProjectMVC.csproj" />
-  <Project Path="WebApplication1/WebApplication1.csproj" />
 </Solution>
