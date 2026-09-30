@@ -44,9 +44,11 @@ jobs:
       - name: Start Services & Verify (Optional)
         run: |
           docker compose up -d
-          # ตรวจสอบสถานะว่า container รันขึ้นมาได้ ไม่ crash
+          sleep 10
           docker compose ps
           # ลองยิง request ไปที่ port 8080 (ถ้ามี health endpoint หรือ route พื้นฐาน)
-          curl --fail http://localhost:8080/weatherforecast || exit 1
-          # ปิด container และเคลียร์ resource
-          docker compose down
+          curl --fail --retry 5 --retry-delay 2 --retry-connrefused http://localhost:8080/weatherforecast
+
+      - name: Teardown Services
+        if: always()
+        run: docker compose down --volumes
