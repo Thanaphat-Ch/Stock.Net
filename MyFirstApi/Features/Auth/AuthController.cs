@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
         var claims = new[]
         {
             new Claim(ClaimTypes.Name, dto.Username),
-            new Claim(ClaimTypes.Role, "Admin") // ฝังยศ Admin เข้าไป
+            new Claim(ClaimTypes.Role, "Admin")
         };
 
         // 3. นำ SecretKey มาเข้ารหัส
