@@ -1,5 +1,8 @@
 name: .NET CI & Docker Build
 
+permissions:
+  contents: read
+  packages: write
 on:
   push:
     branches: [ "main" ]
@@ -52,3 +55,39 @@ jobs:
       - name: Teardown Services
         if: always()
         run: docker compose down --volumes
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag & Push Image to GHCR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          # 1. จัดการชื่อ Repo ให้เป็นตัวพิมพ์เล็กทั้งหมด
+          REPO_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          TARGET_IMAGE="ghcr.io/$REPO_LOWER/dotnet-api"
+
+          # 2. ค้นหาชื่อ Local Image ที่เพิ่ง build มาจาก Compose
+          # (ดึง image ล่าสุดที่เพิ่งสร้างขึ้นมา หรือระบุชื่อตรงๆ แทนได้)
+          LOCAL_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | head -n 1)
+
+          echo "Tagging $LOCAL_IMAGE -> $TARGET_IMAGE"
+
+          # 3. แปะป้ายแท็ก GHCR โดยไม่ต้องบิลด์ใหม่
+          docker tag $LOCAL_IMAGE $TARGET_IMAGE:latest
+          docker tag $LOCAL_IMAGE $TARGET_IMAGE:${{ github.sha }}
+
+          # 4. Push ขึ้น GHCR
+          docker push $TARGET_IMAGE:latest
+          docker push $TARGET_IMAGE:${{ github.sha }}
+
+      - name: Trigger Render Deployment
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          curl -f -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+
+     
