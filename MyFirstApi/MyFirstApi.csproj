@@ -20,4 +20,8 @@
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
   </ItemGroup>
 
+  <!-- Scripts -->
+  <Target Name="addMig"><Exec Command="dotnet ef migrations add tableProduct" /></Target>
+  <Target Name="UpdateMig"><Exec Command="dotnet ef database update" /></Target>
+  <Target Name="rmMig"><Exec Command="dotnet ef migrations remove" /></Target>
 </Project>
