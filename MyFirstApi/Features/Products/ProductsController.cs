@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace MyApiProject.Features.Products;
 
@@ -9,11 +11,12 @@ public class ProductsController : Controller
 
     public async Task<IActionResult> Index()
     {
+        Log.Information("page /product");
         var products = await _service.GetAllAsync();
         return View(products);
     }
 
-    [ValidateAntiForgeryToken]
+    // [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateProductDto dto)
     {
         if (ModelState.IsValid)
@@ -26,7 +29,7 @@ public class ProductsController : Controller
         return View(nameof(Index), products);
     }
 
-    [ValidateAntiForgeryToken]
+    // [ValidateAntiForgeryToken]
     public async Task<IActionResult> AdjustStock(int id, int amount)
     {
         var product = await _service.GetByIdAsync(id);
@@ -43,7 +46,7 @@ public class ProductsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [ValidateAntiForgeryToken]
+    // [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.DeleteAsync(id);
