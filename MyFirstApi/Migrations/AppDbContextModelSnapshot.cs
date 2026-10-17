@@ -44,7 +44,7 @@ namespace MyFirstApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products2");
                 });
 
             modelBuilder.Entity("MyApiProject.Models.User", b =>

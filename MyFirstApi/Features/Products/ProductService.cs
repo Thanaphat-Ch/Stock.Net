@@ -14,7 +14,7 @@ public class ProductService : IProductService
 
     public async Task<IEnumerable<ProductResponseDto>> GetAllAsync()
     {
-        return await _db.Products
+        return await _db.Products2
             .AsNoTracking() // AsNoTracking ช่วยให้อ่านข้อมูลเร็วขึ้น ไม่เก็บ State ลง Memory
             .Select(p => new ProductResponseDto(p.Id, p.Name, p.Price, p.Stock))
             .ToListAsync();
@@ -22,7 +22,7 @@ public class ProductService : IProductService
 
     public async Task<ProductResponseDto?> GetByIdAsync(int id)
     {
-        var p = await _db.Products.FindAsync(id);
+        var p = await _db.Products2.FindAsync(id);
         return p is null ? null : new ProductResponseDto(p.Id, p.Name, p.Price, p.Stock);
     }
 
@@ -35,14 +35,14 @@ public class ProductService : IProductService
             Stock = dto.Stock
         };
 
-        _db.Products.Add(product);
+        _db.Products2.Add(product);
         await _db.SaveChangesAsync();
         return new ProductResponseDto(product.Id, product.Name, product.Price, product.Stock);
     }
 
     public async Task<bool> UpdateAsync(int id, UpdateProductDto dto)
     {
-        var product = await _db.Products.FindAsync(id);
+        var product = await _db.Products2.FindAsync(id);
         if (product is null) return false;
 
         product.Name = dto.Name;
@@ -55,10 +55,10 @@ public class ProductService : IProductService
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var product = await _db.Products.FindAsync(id);
+        var product = await _db.Products2.FindAsync(id);
         if (product is null) return false;
 
-        _db.Products.Remove(product);
+        _db.Products2.Remove(product);
         await _db.SaveChangesAsync();
         return true;
     }
