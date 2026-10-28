@@ -8,12 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 namespace MyApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")] // [controller] จะกลายเป็น /api/users อัตโนมัติจากชื่อคลาส
+[Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly AppDbContext _db;
 
-    // ฉีด Database เข้ามาทาง Constructor ครั้งเดียว ใช้ได้ทุก Action
     public UsersController(AppDbContext db)
     {
         _db = db;
