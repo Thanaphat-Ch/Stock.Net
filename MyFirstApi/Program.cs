@@ -63,7 +63,7 @@ app.MapGet("/", () => Results.Redirect("/products"));
 
 try
 {
-    Log.Information("Starting Web API Application...");
+    Log.Information("Starting Web API Application....");
     app.Run();
 }
 catch (Exception ex)
