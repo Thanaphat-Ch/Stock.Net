@@ -16,7 +16,6 @@ public class ProductsController : Controller
         return View(products);
     }
 
-    // [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateProductDto dto)
     {
         if (ModelState.IsValid)
@@ -29,9 +28,7 @@ public class ProductsController : Controller
         return View(nameof(Index), products);
     }
 
-    // [ValidateAntiForgeryToken]
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AdjustStock(int id, int amount)
     {
         var product = await _service.GetByIdAsync(id);
@@ -57,7 +54,6 @@ public class ProductsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.DeleteAsync(id);
