@@ -3,47 +3,35 @@
     ViewData["Title"] = "จัดการสต็อกสินค้า";
 }
 
-<div class="space-y-6">
+<div class="space-y-6 max-w-7xl mx-auto py-4">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">คลังสินค้า</h1>
-            <p class="text-sm text-slate-500">จัดการข้อมูลและปรับสต็อกสินค้าได้ทันที</p>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">📦 คลังสินค้า</h1>
+            <p class="text-sm text-slate-500">จัดการรายการสินค้า ตรวจสอบ และปรับยอดคงเหลือ</p>
         </div>
-        <div class="text-sm text-slate-600 bg-white border border-slate-200 px-4 py-2 rounded-lg shadow-sm">
-            สินค้าทั้งหมด: <span class="font-semibold text-indigo-600">@Model.Count</span> รายการ
+        <div class="flex items-center gap-3">
+            <span class="text-sm bg-white border border-slate-200 px-3.5 py-2 rounded-lg shadow-sm text-slate-700">
+                ทั้งหมด: <strong class="text-indigo-600">@Model.Count</strong> รายการ
+            </span>
+            <!-- ปุ่มเปิด Modal สำหรับเพิ่มสินค้า -->
+            <button type="button" onclick="openProductModal()"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition shadow-sm flex items-center gap-1.5">
+                <span>➕</span> เพิ่มสินค้าใหม่
+            </button>
         </div>
     </div>
 
-    <!-- ฟอร์มเพิ่มสินค้าใหม่ -->
-    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <h2 class="text-base font-semibold text-slate-800 mb-3">➕ เพิ่มสินค้าใหม่</h2>
-        <form asp-action="Create" method="post" class="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <div>
-                <input name="Name" required placeholder="ชื่อสินค้า..."
-                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-            <div>
-                <input name="Price" type="number" step="0.01" min="0.01" required placeholder="ราคา (บาท)"
-                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-            <div>
-                <input name="Stock" type="number" min="0" required placeholder="จำนวนสต็อกเริ่มต้น"
-                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-            </div>
-            <div>
-                <button type="submit"
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors duration-150">
-                    บันทึกข้อมูล
-                </button>
-            </div>
-        </form>
+    <!-- แถบค้นหาแบบเร็ว -->
+    <div class="flex justify-end">
+        <input type="text" id="searchInput" placeholder="🔍 ค้นหาชื่อสินค้า..." 
+               class="w-full sm:w-64 px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" />
     </div>
 
     <!-- ตารางแสดงรายการสินค้า -->
-    <div class="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
+    <div class="overflow-x-auto bg-white border border-slate-200 rounded-xl shadow-sm">
         <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="bg-slate-100 text-slate-600 font-semibold uppercase text-xs">
+            <thead class="bg-slate-50 text-slate-600 font-medium text-xs">
                 <tr>
                     <th scope="col" class="py-3 px-4 text-left">ID</th>
                     <th scope="col" class="py-3 px-4 text-left">ชื่อสินค้า</th>
@@ -53,7 +41,7 @@
                     <th scope="col" class="py-3 px-4 text-center">จัดการ</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100">
+            <tbody id="productTableBody" class="divide-y divide-slate-100">
                 @if (!Model.Any())
                 {
                     <tr>
@@ -62,57 +50,57 @@
                 }
                 @foreach (var item in Model)
                 {
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50/80 transition-colors product-row">
                         <td class="py-3 px-4 font-mono text-xs text-slate-400">#@item.Id</td>
-                        <td class="py-3 px-4 font-medium text-slate-900">@item.Name</td>
-                        <td class="py-3 px-4 text-right tabular-nums">฿@item.Price.ToString("N2")</td>
+                        <td class="py-3 px-4 font-medium text-slate-900 product-name">@item.Name</td>
+                        <td class="py-3 px-4 text-right tabular-nums text-slate-700 font-medium">฿@item.Price.ToString("N2")</td>
                         <td class="py-3 px-4 text-center">
                             @if (item.Stock == 0)
                             {
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
-                                    หมดสต็อก
-                                </span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">หมดสต็อก</span>
                             }
                             else if (item.Stock <= 5)
                             {
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                                    เหลือ @item.Stock ชิ้น
-                                </span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">เหลือ @item.Stock ชิ้น</span>
                             }
                             else
                             {
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                                    @item.Stock ชิ้น
-                                </span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">@item.Stock ชิ้น</span>
                             }
                         </td>
+                        <td class="py-3 px-4">
+                            <form asp-action="AdjustStock" method="post" class="flex items-center justify-center gap-1">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" name="direction" value="down"
+                                        class="w-7 h-7 flex items-center justify-center rounded border border-slate-300 text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-300 text-xs font-bold transition">
+                                    -
+                                </button>
+                                <input type="number" name="amount" value="1" min="1" 
+                                       class="w-14 text-center py-1 border border-slate-300 rounded text-xs focus:ring-1 focus:ring-indigo-500" />
+                                <button type="submit" name="direction" value="up"
+                                        class="w-7 h-7 flex items-center justify-center rounded border border-slate-300 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-300 text-xs font-bold transition">
+                                    +
+                                </button>
+                            </form>
+                        </td>
                         <td class="py-3 px-4 text-center">
-                            <div class="inline-flex gap-1.5 items-center">
-                                <form asp-action="AdjustStock" method="post">
+                            <div class="inline-flex items-center gap-2">
+                                <!-- ปุ่มแก้ไข (เปิด Modal พร้อมใส่ข้อมูลเดิม) -->
+                                <button type="button" 
+                                        onclick="openProductModal(@item.Id, '@Html.Raw(item.Name.Replace("'", "\\'"))', @item.Price, @item.Stock)"
+                                        class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+                                    แก้ไข
+                                </button>
+                                <span class="text-slate-300">|</span>
+                                <form asp-action="Delete" method="post" onsubmit="return confirm('ยืนยันลบสินค้านี้?');" class="inline">
+                                    @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@item.Id" />
-                                    <input type="hidden" name="amount" value="-1" />
-                                    <button type="submit" @(item.Stock <= 0 ? "disabled" : "")
-                                            class="w-7 h-7 flex items-center justify-center rounded border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold transition">
-                                        -
-                                    </button>
-                                </form>
-                                <form asp-action="AdjustStock" method="post">
-                                    <input type="hidden" name="id" value="@item.Id" />
-                                    <input type="hidden" name="amount" value="1" />
-                                    <button type="submit"
-                                            class="w-7 h-7 flex items-center justify-center rounded border border-slate-300 text-slate-600 hover:bg-slate-100 text-xs font-bold transition">
-                                        +
+                                    <button type="submit" class="text-xs text-red-500 hover:text-red-700 font-medium">
+                                        ลบ
                                     </button>
                                 </form>
                             </div>
-                        </td>
-                        <td class="py-3 px-4 text-center">
-                            <form asp-action="Delete" method="post" onsubmit="return confirm('ยืนยันลบสินค้านี้?');">
-                                <input type="hidden" name="id" value="@item.Id" />
-                                <button type="submit" class="text-xs text-red-600 hover:text-red-800 hover:underline font-medium">
-                                    ลบ
-                                </button>
-                            </form>
                         </td>
                     </tr>
                 }
@@ -120,3 +108,104 @@
         </table>
     </div>
 </div>
+
+<!-- ================= Modal Popup (ตัวเดียวใช้ทั้ง เพิ่ม และ แก้ไข) ================= -->
+<dialog id="productModal" class="rounded-2xl p-0 backdrop:bg-slate-900/40 shadow-2xl w-full max-w-md border border-slate-200">
+    <div class="p-6">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h3 id="modalTitle" class="text-lg font-bold text-slate-900">เพิ่มสินค้าใหม่</h3>
+            <button type="button" onclick="closeProductModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none">&times;</button>
+        </div>
+
+        <form id="productForm" method="post" class="mt-4 space-y-4">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="modalProductId" name="Id" value="" />
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อสินค้า</label>
+                <input id="modalName" name="Name" required placeholder="เช่น เสื้อยืดสีดำ Oversize"
+                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ราคา (บาท)</label>
+                <input id="modalPrice" name="Price" type="number" step="0.01" min="0" required placeholder="0.00"
+                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <div id="stockInputContainer">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">จำนวนสต็อก</label>
+                <input id="modalStock" name="Stock" type="number" min="0" required placeholder="0"
+                       class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <div class="pt-3 flex gap-2 justify-end">
+                <button type="button" onclick="closeProductModal()"
+                        class="px-4 py-2 border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-lg text-sm font-medium transition">
+                    ยกเลิก
+                </button>
+                <button type="submit" id="modalSubmitBtn"
+                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition shadow-sm">
+                    บันทึกข้อมูล
+                </button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<script>
+    const modal = document.getElementById('productModal');
+    const form = document.getElementById('productForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const idInput = document.getElementById('modalProductId');
+    const nameInput = document.getElementById('modalName');
+    const priceInput = document.getElementById('modalPrice');
+    const stockInput = document.getElementById('modalStock');
+
+    // ฟังก์ชันเปิด Modal: ถ้าไม่ส่งค่ามา = โหมด "เพิ่ม", ถ้าส่งค่ามา = โหมด "แก้ไข"
+    function openProductModal(id = null, name = '', price = '', stock = 0) {
+        if (id) {
+            modalTitle.innerText = '✏️ แก้ไขสินค้า';
+            form.action = '/Products/Edit'; // หรือ URL Action แก้ไขของคุณ
+            idInput.value = id;
+            nameInput.value = name;
+            priceInput.value = price;
+            stockInput.value = stock;
+        } else {
+            modalTitle.innerText = '➕ เพิ่มสินค้าใหม่';
+            form.action = '/Products/Create';
+            idInput.value = '';
+            nameInput.value = '';
+            priceInput.value = '';
+            stockInput.value = '0';
+        }
+        modal.showModal();
+    }
+
+    function closeProductModal() {
+        modal.close();
+    }
+
+    // กดบริเวณพื้นหลังสีดำนอกกล่องเพื่อปิด Modal ได้
+    modal.addEventListener('click', (e) => {
+        const dialogDimensions = modal.getBoundingClientRect();
+        if (
+            e.clientX < dialogDimensions.left ||
+            e.clientX > dialogDimensions.right ||
+            e.clientY < dialogDimensions.top ||
+            e.clientY > dialogDimensions.bottom
+        ) {
+            modal.close();
+        }
+    });
+
+    // ค้นหาสินค้า
+    document.getElementById('searchInput').addEventListener('keyup', function () {
+        const filter = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#productTableBody .product-row');
+        rows.forEach(row => {
+            const name = row.querySelector('.product-name').textContent.toLowerCase();
+            row.style.display = name.includes(filter) ? '' : 'none';
+        });
+    });
+</script>

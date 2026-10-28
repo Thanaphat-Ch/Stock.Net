@@ -30,19 +30,30 @@ public class ProductsController : Controller
     }
 
     // [ValidateAntiForgeryToken]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AdjustStock(int id, int amount)
     {
         var product = await _service.GetByIdAsync(id);
-        if (product != null)
+        if (product == null) return NotFound();
+        int newStock = Math.Max(0, product.Stock + amount);
+
+        var updateDto = new UpdateProductDto
         {
-            var updateDto = new UpdateProductDto
-            {
-                Name = product.Name,
-                Price = product.Price,
-                Stock = Math.Max(0, product.Stock + amount)
-            };
-            await _service.UpdateAsync(id, updateDto);
-        }
+            Name = product.Name,
+            Price = product.Price,
+            Stock = newStock
+        };
+
+        await _service.UpdateAsync(id, updateDto);
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Edit(int id, UpdateProductDto dto)
+    {
+        if (!ModelState.IsValid) return RedirectToAction(nameof(Index));
+
+        await _service.UpdateAsync(id, dto);
         return RedirectToAction(nameof(Index));
     }
 
