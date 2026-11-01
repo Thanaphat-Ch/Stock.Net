@@ -16,11 +16,9 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connect
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddCustomCors(builder.Configuration);
 
-// ลงทะเบียนระบบ Exception Handler
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-// DI Services
 builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddControllersWithViews()
