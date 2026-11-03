@@ -11,11 +11,9 @@ public class ProductsController : Controller
 
     public async Task<IActionResult> Index()
     {
-        Log.Information("page /product");
         var products = await _service.GetAllAsync();
         return View(products);
     }
-
     public async Task<IActionResult> Create(CreateProductDto dto)
     {
         if (ModelState.IsValid)

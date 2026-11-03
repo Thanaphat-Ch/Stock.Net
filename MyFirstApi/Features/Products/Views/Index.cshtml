@@ -4,7 +4,6 @@
 }
 
 <div class="space-y-6 max-w-7xl mx-auto py-4">
-    <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-slate-900 tracking-tight">📦 ระบบจัดการคลังสินค้า</h1>
@@ -14,7 +13,6 @@
             <span class="text-sm bg-white border border-slate-200 px-3.5 py-2 rounded-lg shadow-sm text-slate-700">
                 ทั้งหมด: <strong class="text-indigo-600">@Model.Count</strong> รายการ
             </span>
-            <!-- ปุ่มเปิด Modal สำหรับเพิ่มสินค้า -->
             <button type="button" onclick="openProductModal()"
                     class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition shadow-sm flex items-center gap-1.5">
                 <span>➕</span> เพิ่มสินค้าใหม่
@@ -22,13 +20,11 @@
         </div>
     </div>
 
-    <!-- แถบค้นหาแบบเร็ว -->
     <div class="flex justify-end">
         <input type="text" id="searchInput" placeholder="🔍 ค้นหาชื่อสินค้า..." 
                class="w-full sm:w-64 px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" />
     </div>
 
-    <!-- ตารางแสดงรายการสินค้า -->
     <div class="overflow-x-auto bg-white border border-slate-200 rounded-xl shadow-sm">
         <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead class="bg-slate-50 text-slate-600 font-medium text-xs">
@@ -86,7 +82,6 @@
                         </td>
                         <td class="py-3 px-4 text-center">
                             <div class="inline-flex items-center gap-2">
-                                <!-- ปุ่มแก้ไข (เปิด Modal พร้อมใส่ข้อมูลเดิม) -->
                                 <button type="button" 
                                         onclick="openProductModal(@item.Id, '@Html.Raw(item.Name.Replace("'", "\\'"))', @item.Price, @item.Stock)"
                                         class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
@@ -109,7 +104,7 @@
     </div>
 </div>
 
-<!-- ================= Modal Popup (ตัวเดียวใช้ทั้ง เพิ่ม และ แก้ไข) ================= -->
+<!-- ================= Modal Popup ================= -->
 <dialog id="productModal" class="rounded-2xl p-0 backdrop:bg-slate-900/40 shadow-2xl w-full max-w-md border border-slate-200">
     <div class="p-6">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -166,7 +161,7 @@
     function openProductModal(id = null, name = '', price = '', stock = 0) {
         if (id) {
             modalTitle.innerText = '✏️ แก้ไขสินค้า';
-            form.action = '/Products/Edit'; // หรือ URL Action แก้ไขของคุณ
+            form.action = '/Products/Edit'; // URL Action แก้ไข
             idInput.value = id;
             nameInput.value = name;
             priceInput.value = price;
