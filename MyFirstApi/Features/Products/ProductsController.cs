@@ -14,19 +14,23 @@ public class ProductsController : Controller
         var products = await _service.GetAllAsync();
         return View(products);
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateProductDto dto)
     {
-        if (ModelState.IsValid)
-        {
-            await _service.CreateAsync(dto);
-            return RedirectToAction(nameof(Index));
-        }
+       if (ModelState.IsValid)
+       {
+           await _service.CreateAsync(dto);
+           return RedirectToAction(nameof(Index));
+       }
 
-        var products = await _service.GetAllAsync();
-        return View(nameof(Index), products);
+       var products = await _service.GetAllAsync();
+       return View(nameof(Index), products);
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AdjustStock(int id, int amount)
     {
         var product = await _service.GetByIdAsync(id);
@@ -43,18 +47,53 @@ public class ProductsController : Controller
         await _service.UpdateAsync(id, updateDto);
         return RedirectToAction(nameof(Index));
     }
-
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, UpdateProductDto dto)
     {
-        if (!ModelState.IsValid) return RedirectToAction(nameof(Index));
+       if (!ModelState.IsValid) return RedirectToAction(nameof(Index));
 
-        await _service.UpdateAsync(id, dto);
-        return RedirectToAction(nameof(Index));
+       await _service.UpdateAsync(id, dto);
+       return RedirectToAction(nameof(Index));
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.DeleteAsync(id);
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Save(ProductUpsertDto dto)
+    {
+        if (!ModelState.IsValid) return RedirectToAction(nameof(Index));
+
+        if (dto.Id == 0)
+        {
+            var createDto = new CreateProductDto
+            {
+                Name = dto.Name,
+                Price = dto.Price,
+                Stock = dto.Stock
+            };
+
+            await _service.CreateAsync(createDto);
+        }
+        else
+        {
+            var updateDto = new UpdateProductDto
+            {
+                Name = dto.Name,
+                Price = dto.Price,
+                Stock = dto.Stock
+            };
+
+            await _service.UpdateAsync(dto.Id, updateDto);
+        }
         return RedirectToAction(nameof(Index));
     }
 }

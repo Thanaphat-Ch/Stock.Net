@@ -15,7 +15,7 @@ public class ProductService : IProductService
     public async Task<IEnumerable<ProductResponseDto>> GetAllAsync()
     {
         return await _db.Products2
-            .AsNoTracking() // AsNoTracking ช่วยให้อ่านข้อมูลเร็วขึ้น ไม่เก็บ State ลง Memory
+            .AsNoTracking() 
             .Select(p => new ProductResponseDto(p.Id, p.Name, p.Price, p.Stock))
             .ToListAsync();
     }
