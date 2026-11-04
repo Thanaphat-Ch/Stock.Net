@@ -4,14 +4,45 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Stock Manager</title>
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
     <nav class="bg-indigo-600 text-white shadow-sm">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <span class="font-bold text-lg tracking-wide">📦 ระบบจัดการคลังสินค้า</span>
-            @* <div class="text-xs bg-indigo-700 py-1 px-3 rounded-full"></div> *@
+            <a asp-controller="Stock" asp-action="Index" class="font-bold text-lg tracking-wide hover:text-indigo-100 transition">
+                📦 ระบบจัดการคลังสินค้า2
+            </a>
+
+            <div class="flex items-center space-x-3 text-sm">
+                @if (User.Identity is not null && User.Identity.IsAuthenticated)
+                {
+                    <div class="flex items-center space-x-2">
+                        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span class="text-indigo-100 font-medium">@User.Identity.Name</span>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <span class="text-[10px] bg-indigo-800 text-indigo-200 px-1.5 py-0.5 rounded font-mono">Admin</span>
+                        }
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="inline m-0">
+                        <button type="submit"
+                                class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs py-1.5 px-3 rounded-md transition duration-150">
+                            ออกจากระบบ
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Register"
+                       class="text-indigo-100 hover:text-white transition duration-150 px-2 py-1">
+                        สมัครสมาชิก
+                    </a>
+                    <a asp-controller="Account" asp-action="Login"
+                       class="bg-white text-indigo-600 hover:bg-indigo-50 font-medium text-xs py-1.5 px-3.5 rounded-md shadow-sm transition duration-150">
+                        เข้าสู่ระบบ
+                    </a>
+                }
+            </div>
         </div>
     </nav>
 

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using MyApiProject.Models;
+using MyFirstApi.Models;
 
 namespace MyApiProject.Features.Products;
 

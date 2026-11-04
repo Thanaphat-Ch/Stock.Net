@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using MyApiProject.Endpoints;
-using MyApiProject.Models;
 using MyApiProject.Extensions;
 using MyApiProject.Handlers;
 using Serilog;
 using MyApiProject.Features.Products;
+using MyApiProject.Features.Account;
+using Microsoft.AspNetCore.Identity;
+using MyFirstApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("SupabaseDb");
@@ -19,7 +20,9 @@ builder.Services.AddCustomCors(builder.Configuration);
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services.AddControllersWithViews()
     .AddRazorOptions(options =>

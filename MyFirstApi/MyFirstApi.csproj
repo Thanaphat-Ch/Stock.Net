@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.13" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,6 +22,7 @@
   </ItemGroup>
 
   <!-- Scripts -->
+  <!-- dotnet msbuild -t:addMig -->
   <Target Name="addMig"><Exec Command="dotnet ef migrations add tableProduct" /></Target>
   <Target Name="UpdateMig"><Exec Command="dotnet ef database update" /></Target>
   <Target Name="rmMig"><Exec Command="dotnet ef migrations remove" /></Target>
