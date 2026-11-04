@@ -18,13 +18,13 @@ public static class UserHandlers
         return user is not null ? Results.Ok(user) : Results.NotFound(new { message = $"User with ID {id} not found" });
     }
 
-    public static async Task<IResult> CreateUser(CreateUserDto dto, AppDbContext db)
-    {
-        var user = new User { Name = dto.Name, Email = dto.Email };
-        db.Users2.Add(user);
-        await db.SaveChangesAsync();
-        return Results.Created($"/api/users/{user.Id}", user);
-    }
+    // public static async Task<IResult> CreateUser(CreateUserDto dto, AppDbContext db)
+    // {
+    //     var user = new User { Name = dto.Name, Email = dto.Email };
+    //     db.Users2.Add(user);
+    //     await db.SaveChangesAsync();
+    //     return Results.Created($"/api/users/{user.Id}", user);
+    // }
 
     public static async Task<IResult> UpdateUser(int id, UpdateUserDto dto, AppDbContext db)
     {

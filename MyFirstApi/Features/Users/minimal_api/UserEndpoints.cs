@@ -12,7 +12,7 @@ public static class UserEndpoints
         // กำหนด Route ย่อย (สังเกตว่าจะเริ่มจาก "/" เพราะมี prefix ข้างบนแล้ว)
         group.MapGet("/", GetAllUsers);
         group.MapGet("/{id:int}", GetUserById);
-        group.MapPost("/", CreateUser);
+        // group.MapPost("/", CreateUser);
         group.MapPut("/{id:int}", UpdateUser);
         group.MapDelete("/{id:int}", DeleteUser);
 
