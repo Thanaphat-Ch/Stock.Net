@@ -1,12 +1,13 @@
-using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
-using MyApiProject.Extensions;
-using MyApiProject.Handlers;
-using Serilog;
-using MyApiProject.Features.Products;
-using MyApiProject.Features.Account;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MyApiProject.Extensions;
+using MyApiProject.Features.Account;
+using MyApiProject.Features.Products;
+using MyApiProject.Handlers;
 using MyFirstApi.Models;
+using Scalar.AspNetCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("SupabaseDb");
@@ -16,6 +17,22 @@ builder.AddSerilogLogging();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddCustomCors(builder.Configuration);
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "MyStockApp.AuthCookie";
+        options.LoginPath = "/Account/Login";               // หน้าล็อกอินเมื่อยังไม่ได้เข้าระบบ (401)
+        options.AccessDeniedPath = "/Account/AccessDenied"; // หน้าแจ้งเตือนเมื่อ Role ไม่ถึง (403)
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;                   // ยืดอายุคุกกี้เมื่อมีการใช้งานเรื่อยๆ
+        options.Cookie.HttpOnly = true;                     // ป้องกัน JavaScript เข้าถึง Cookie (Security)
+        options.Cookie.SameSite = SameSiteMode.Lax;
+    });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("StaffOnly", policy => policy.RequireRole("Admin", "Staff"));
+});
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();

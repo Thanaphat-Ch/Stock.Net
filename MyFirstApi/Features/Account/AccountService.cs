@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MyApiProject.Models;
 using MyFirstApi.Models;
 
 namespace MyApiProject.Features.Account;
@@ -39,7 +38,7 @@ public class AccountService : IAccountService
     {
         var user = await _db.Users2.FirstOrDefaultAsync(u => u.Email == model.Email);
         if (user == null) return (false, "อีเมลหรือรหัสผ่านไม่ถูกต้อง", null);
-     
+
         var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
         if (verifyResult == PasswordVerificationResult.Failed) return (false, "อีเมลหรือรหัสผ่านไม่ถูกต้อง", null);
 
