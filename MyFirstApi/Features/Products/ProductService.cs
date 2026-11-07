@@ -15,7 +15,7 @@ public class ProductService : IProductService
     public async Task<IEnumerable<ProductResponseDto>> GetAllAsync()
     {
         return await _db.Products2
-            .AsNoTracking() 
+            .AsNoTracking()
             .Select(p => new ProductResponseDto(p.Id, p.Name, p.Price, p.Stock))
             .ToListAsync();
     }

@@ -15,20 +15,6 @@ public class ProductsController : Controller
         return View(products);
     }
 
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Create(CreateProductDto dto)
-    //{
-    //   if (ModelState.IsValid)
-    //   {
-    //       await _service.CreateAsync(dto);
-    //       return RedirectToAction(nameof(Index));
-    //   }
-
-    //   var products = await _service.GetAllAsync();
-    //   return View(nameof(Index), products);
-    //}
-
     [Authorize(Roles = "Staff")]
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -48,16 +34,6 @@ public class ProductsController : Controller
         await _service.UpdateAsync(id, updateDto);
         return RedirectToAction(nameof(Index));
     }
-    
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Edit(int id, UpdateProductDto dto)
-    //{
-    //   if (!ModelState.IsValid) return RedirectToAction(nameof(Index));
-
-    //   await _service.UpdateAsync(id, dto);
-    //   return RedirectToAction(nameof(Index));
-    //}
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
@@ -83,7 +59,6 @@ public class ProductsController : Controller
                 Price = dto.Price,
                 Stock = dto.Stock
             };
-
             await _service.CreateAsync(createDto);
         }
         else
@@ -94,7 +69,6 @@ public class ProductsController : Controller
                 Price = dto.Price,
                 Stock = dto.Stock
             };
-
             await _service.UpdateAsync(dto.Id, updateDto);
         }
         return RedirectToAction(nameof(Index));
