@@ -15,7 +15,7 @@ var connectionString = builder.Configuration.GetConnectionString("SupabaseDb");
 builder.AddSerilogLogging();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddJwtAuthentication(builder.Configuration);
+//builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddCustomCors(builder.Configuration);
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
