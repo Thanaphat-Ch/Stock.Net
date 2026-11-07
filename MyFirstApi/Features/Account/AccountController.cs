@@ -102,5 +102,12 @@ namespace MyFirstApi.Features.Account
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
         }
+
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }
